@@ -6,11 +6,9 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: process.env.GOOGLE_CALLBACK_URL, // Adjust the callback URL based on your setup
+      callbackURL: process.env.GOOGLE_CALLBACK_URL, 
     },
     (accessToken, refreshToken, profile, done) => {
-      // Save user data to the database or retrieve existing user
-      // For simplicity, let's assume your User model has a function `findOrCreate`
       User.findOrCreate({ googleId: profile.id }, (err, user) => {
         return done(err, user);
       });
@@ -23,7 +21,6 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser((id, done) => {
-  // Retrieve user from the database based on id
   User.findById(id, (err, user) => {
     done(err, user);
   });
