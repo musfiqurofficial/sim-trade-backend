@@ -6,6 +6,7 @@ const session = require('express-session');
 const authRouter = require("./routes/auth");
 const secureRoute = require("./routes/secureRoute");
 const userSaveRoute = require("./routes/userSaveRoute");
+const stockWatchListRoute = require("./routes/stockWatchListRoute");
 const passport = require("./config/passport-setup");
 
 dotenv.config();
@@ -37,10 +38,10 @@ app.use(
   })
 );
 
-// Initialize Passport and restore authentication state if any, from the session.
 app.use(passport.initialize());
 app.use(passport.session());
 
 app.use("/auth", authRouter);
 app.use("/secure", secureRoute);
 app.use("/api", userSaveRoute);
+app.use("/api", stockWatchListRoute);

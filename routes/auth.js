@@ -4,13 +4,13 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
-const passport = require('passport');
+const passport = require("passport");
 
 dotenv.config();
 
 router.post("/register", async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password, balance } = req.body;
 
     const existingUser = await User.findOne({ $or: [{ email }, { username }] });
     if (existingUser) {
@@ -19,7 +19,8 @@ router.post("/register", async (req, res) => {
         .json({ error: "Email or username already registered" });
     }
 
-    const newUser = new User({ username, email, password });
+    const newUser = new User({ username, email, password, balance });
+
     await newUser.save();
 
     const token = jwt.sign({ userId: newUser.userId }, process.env.JWT_SECRET, {
@@ -63,12 +64,22 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+router.get(
+  "/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
 
-router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/' }), (req, res) => {
-
-  const token = jwt.sign({ userId: req.user.userId }, process.env.JWT_SECRET, { expiresIn: '240h' });
-  res.status(200).json({ message: 'Google login successful', token });
-});
+router.get(
+  "/google/callback",
+  passport.authenticate("google", { failureRedirect: "/" }),
+  (req, res) => {
+    const token = jwt.sign(
+      { userId: req.user.userId },
+      process.env.JWT_SECRET,
+      { expiresIn: "240h" }
+    );
+    res.status(200).json({ message: "Google login successful", token });
+  }
+);
 
 module.exports = router;

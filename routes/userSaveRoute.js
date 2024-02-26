@@ -1,23 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const User = require("../models/User");
+const { authenticateToken } = require("../middleware/authMiddleware");
 
 dotenv.config();
 
-const verifyToken = (req, res, next) => {
-  const token = req.header("Authorization");
-  if (!token) return res.status(401).json({ message: "Access denied" });
-
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) return res.status(403).json({ message: "Invalid token" });
-    req.user = user;
-    next();
-  });
-};
-
-router.get("/user-save", verifyToken, async (req, res) => {
+router.get("/user-save", authenticateToken, async (req, res) => {
   try {
     const userId = req.user.userId;
 
@@ -31,6 +20,7 @@ router.get("/user-save", verifyToken, async (req, res) => {
       userId: user.userId,
       username: user.username,
       email: user.email,
+      balance: user.balance,
     });
   } catch (error) {
     console.error(error);

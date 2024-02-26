@@ -19,6 +19,10 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
   },
+  balance: {
+    type: Number,
+    default: 0, 
+  },
 });
 
 userSchema.pre('save', async function (next) {
