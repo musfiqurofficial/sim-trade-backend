@@ -8,7 +8,7 @@ const stockOrderSchema = new Schema({
   symbol: String,
   quantity: Number,
   price: Number,
-  userId: Number,
+  userId: String,
   timestamp: Number,
 });
 
@@ -19,7 +19,7 @@ const positionSchema = new Schema({
   symbol: String,
   quantity: Number,
   price: Number,
-  userId: Number,
+  userId: String,
   pNlReport: Number,
   investedAmount: Number,
   timestamp: Number,
@@ -32,7 +32,7 @@ const performanceSchema = new Schema({
   symbol: String,
   quantity: Number,
   price: Number,
-  userId: Number,
+  userId: String,
   pNlReport: Number,
   investedAmount: Number,
   timestamp: Number,
@@ -42,7 +42,7 @@ const performanceSchema = new Schema({
 const watchesListSchema = new Schema({
   list_of_symbol: [
     {
-      userId: Number,
+      userId: String,
       symbol: String,
       stock_order: [stockOrderSchema],
       position: [positionSchema],

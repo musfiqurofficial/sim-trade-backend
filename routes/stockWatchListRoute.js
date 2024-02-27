@@ -6,7 +6,7 @@ const { authenticateToken } = require("../middleware/authMiddleware");
 
 dotenv.config();
 
-router.post("/addStockToWatchList",  async (req, res) => {
+router.post("/addStockToWatchList", async (req, res) => {
   try {
     const { userId, symbol } = req.body;
 
@@ -23,7 +23,7 @@ router.post("/addStockToWatchList",  async (req, res) => {
     } else {
       const symbolExists = watchlist.list_of_symbol.some(
         (item) => item.symbol === symbol
-      );    
+      );
       if (symbolExists) {
         return res
           .status(400)
@@ -44,6 +44,27 @@ router.post("/addStockToWatchList",  async (req, res) => {
       .json({ message: `Stock ${symbol} added to watchlist successfully.` });
   } catch (error) {
     console.error("Error adding stock to watchlist:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.get("/getWatchListSymbols/:userId", async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    const watchlist = await WatchList.findOne({
+      "list_of_symbol.userId": userId,
+    });
+
+    if (!watchlist) {
+      return res.status(404).json({ message: "Watchlist not found for user." });
+    }
+
+    const symbols = watchlist.list_of_symbol.map((item) => item.symbol);
+
+    res.status(200).json({ symbols });
+  } catch (error) {
+    console.error("Error getting watchlist symbols:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
