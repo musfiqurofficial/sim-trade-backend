@@ -8,7 +8,13 @@ dotenv.config();
 
 router.post("/addStockToWatchList", async (req, res) => {
   try {
-    const { userId, symbol } = req.body;
+    const { userId, symbol, stock_order, position, performance } = req.body;
+    // console.log(userId);
+    // console.log(symbol);
+    console.log(req.body);
+    // console.log(stock_order);
+    // console.log(position);
+    // console.log(performance);
 
     let watchlist = await WatchList.findOne({
       "list_of_symbol.userId": userId,
@@ -17,7 +23,7 @@ router.post("/addStockToWatchList", async (req, res) => {
     if (!watchlist) {
       watchlist = new WatchList({
         list_of_symbol: [
-          { userId, symbol, stock_order: [], position: [], performance: [] },
+          { userId, symbol, stock_order, position, performance },
         ],
       });
     } else {
@@ -32,13 +38,12 @@ router.post("/addStockToWatchList", async (req, res) => {
       watchlist.list_of_symbol.push({
         userId,
         symbol,
-        stock_order: [],
-        position: [],
-        performance: [],
+        stock_order,
+        position,
+        performance,
       });
     }
     await watchlist.save();
-
     res
       .status(200)
       .json({ message: `Stock ${symbol} added to watchlist successfully.` });
