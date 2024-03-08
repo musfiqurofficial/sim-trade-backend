@@ -6,47 +6,44 @@ const watchesListSchema = new Schema({
     {
       userId: String,
       symbol: String,
-      stock_order: [
-        {
-          orderId: Number,
-          orderType: String,
-          tradeType: String,
-          symbol: String,
-          quantity: Number,
-          price: Number,
-          timestamp: Number,
-        },
-      ],
-      position: [
-        {
-          orderId: Number,
-          orderType: String,
-          tradeType: String,
-          symbol: String,
-          quantity: Number,
-          price: Number,
-          pNlReport: Number,
-          investedAmount: Number,
-          timestamp: Number,
-        },
-      ],
-      performance: [
-        {
-          orderId: Number,
-          orderType: String,
-          tradeType: String,
-          symbol: String,
-          quantity: Number,
-          price: Number,
-          pNlReport: Number,
-          investedAmount: Number,
-          timestamp: Number,
-          exitPrice: Number,
-        },
-      ],
+      stock_order: {
+        orderId: Number,
+        orderType: String,
+        tradeType: String,
+        symbol: String,
+        quantity: Number,
+        price: String,
+        timestamp: String,
+      },
+
+      position: {
+        orderId: Number,
+        orderType: String,
+        tradeType: String,
+        symbol: String,
+        quantity: Number,
+        price: String,
+        pNlReport: String,
+        investedAmount: Number,
+        timestamp: String,
+      },
+
+      performance: {
+        orderId: Number,
+        orderType: String,
+        tradeType: String,
+        symbol: String,
+        quantity: Number,
+        price: String,
+        pNlReport: String,
+        investedAmount: Number,
+        timestamp: String,
+        exitPrice: String,
+      },
     },
   ],
 });
+
 
 const WatchList = mongoose.model("WatchList", watchesListSchema);
 
