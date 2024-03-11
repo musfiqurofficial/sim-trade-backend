@@ -104,10 +104,10 @@ router.get("/getWatchListSymbols/:userId", async (req, res) => {
 
 router.get("/getStockOrderList/:userId", async (req, res) => {
   try {
-    const userId = req.params.userId;
+    const userID = req.params.userId;
 
     const watchlist = await WatchList.findOne({
-      "list_of_symbol.userId": userId,
+      "list_of_symbol.userId": userID,
     });
 
     if (!watchlist) {
@@ -129,5 +129,40 @@ router.get("/getStockOrderList/:userId", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
+router.delete("/removeStockFromWatchList/:userId/:symbol", async (req, res) => {
+  try {
+    const { userId, symbol } = req.params;
+
+    let watchlist = await WatchList.findOne({
+      "list_of_symbol.userId": userId,
+    });
+
+    if (!watchlist) {
+      return res.status(404).json({ message: "Watchlist not found for user." });
+    }
+
+    const indexToRemove = watchlist.list_of_symbol.findIndex(
+      (item) => item.symbol === symbol
+    );
+
+    if (indexToRemove === -1) {
+      return res.status(404).json({ message: "Symbol not found in the watchlist." });
+    }
+
+    if (watchlist.list_of_symbol[indexToRemove].stock_order?.orderId) {
+      return res.status(400).json({ message: "Cannot delete item with orderId." });
+    }
+
+    watchlist.list_of_symbol.splice(indexToRemove, 1);
+    await watchlist.save();
+
+    res.status(200).json({ message: `Symbol ${symbol} removed from watchlist.` });
+  } catch (error) {
+    console.error("Error removing stock from watchlist:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 
 module.exports = router;
